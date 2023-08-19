@@ -64,11 +64,7 @@ instance (Eq i) => Alternative (Parser i) where
 
 {- Elementary Parsers -}
 satisfy :: (i -> Bool) -> Parser i i
-satisfy predicate = Parser $ \input ->
-  case input of
-    [] -> Left [EndOfInput]
-    test:rest | predicate test -> Right (test, rest)
-              | otherwise      -> Left [Unexpected test]
+satisfy = token Unexpected
 
 char :: Eq i => i -> Parser i i
 char i = satisfy (== i)
