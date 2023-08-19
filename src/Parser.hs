@@ -4,14 +4,18 @@ module Parser
   , satisfy
   , char
   , string
+  , eof
   ) where
 
 import Prelude hiding (any)
 import Control.Applicative (Alternative (..))
 import Data.List (nub)
+-- import Tokenizer ( Token(..)
+--                  , tokenizer )
 
 {- Types and Data types -}
 data Error i = EndOfInput
+             | ExpectedEndOfInput i
              | Unexpected i
              | Expected i i
              | Empty
@@ -67,9 +71,15 @@ satisfy :: (i -> Bool) -> Parser i i
 satisfy = token Unexpected
 
 char :: Eq i => i -> Parser i i
-char i = satisfy (== i)
+char i = token (Expected i) (== i)
 
 string :: Eq i => [i] -> Parser i [i]
 string []  = pure []
 string (c:str) = (:) <$> char c <*> string str
+
+eof :: Parser i ()
+eof = Parser $ \input -> case input of
+  []    -> Right ((), [])
+  (t:_) -> Left [ExpectedEndOfInput t]
 ------------------------------------------------------------
+
