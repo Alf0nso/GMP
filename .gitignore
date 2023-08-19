@@ -1,2 +1,5 @@
 # Stack related files
+.stack-work/
+TAGS
+stack.yaml.lock
 *.cabal
