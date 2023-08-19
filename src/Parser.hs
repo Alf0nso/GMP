@@ -11,6 +11,7 @@ module Parser
 import Prelude hiding (any)
 import Control.Applicative (Alternative (..))
 import Data.List (nub)
+-- import Data.Char
 -- import Tokenizer ( Token(..)
 --                  , tokenizer )
 
