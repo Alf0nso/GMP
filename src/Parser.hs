@@ -5,6 +5,7 @@ module Parser
   , char
   , string
   , eof
+  , any
   ) where
 
 import Prelude hiding (any)
@@ -16,6 +17,7 @@ import Data.List (nub)
 {- Types and Data types -}
 data Error i = EndOfInput
              | ExpectedEndOfInput i
+             | ExpectedSomething
              | Unexpected i
              | Expected i i
              | Empty
@@ -81,5 +83,10 @@ eof :: Parser i ()
 eof = Parser $ \input -> case input of
   []    -> Right ((), [])
   (t:_) -> Left [ExpectedEndOfInput t]
+
+any :: Parser i i
+any = Parser $ \input -> case input of
+  t:rest -> Right (t, rest)
+  []     -> Left [ExpectedSomething]
 ------------------------------------------------------------
 
