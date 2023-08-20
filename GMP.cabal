@@ -1,0 +1,34 @@
+name:                GMP
+version:             0.1.0.0
+-- synopsis:
+-- description:
+homepage:            https://github.com/Alf0nso/GMP/blob/main/README.org
+license:             BSD3
+license-file:        LICENSE
+author:              Afonso Pinto Cardoso Rafael
+maintainer:          afonsorafael@sapo.pt
+copyright:           2023 Afonso Pinto Cardoso Rafael
+category:            Web
+build-type:          Simple
+extra-source-files:  README.org
+                     CHANGELOG.md
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Parser
+  build-depends:       base >= 4.7 && < 5
+  default-language:    Haskell2010
+  ghc-options:         -Wall
+                       -Wcompat
+                       -Widentities
+                       -Wincomplete-record-updates
+                       -Wincomplete-uni-patterns
+                       -Wmissing-export-lists
+                       -Wmissing-home-modules
+                       -Wpartial-fields
+                       -Wredundant-constraints
+
+source-repository head
+  type:     git
+  location: https://github.com/Alf0nso/GMP

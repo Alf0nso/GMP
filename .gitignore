@@ -2,4 +2,3 @@
 .stack-work/
 TAGS
 stack.yaml.lock
-*.cabal
