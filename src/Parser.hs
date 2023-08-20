@@ -34,7 +34,6 @@ data Error i = EndOfInput
 
 newtype Parser i o =
   Parser { parse :: [i] -> Either [Error i] (o, [i]) }
-                     deriving (Functor)
 
 token :: (i -> Error i) -> (i -> Bool) -> Parser i i
 token err predicate = Parser $ \input -> case input of
@@ -45,6 +44,12 @@ token err predicate = Parser $ \input -> case input of
 ------------------------------------------------------------
 
 {- Instances -}
+instance Functor (Parser i) where
+  fmap f (Parser p) = Parser $ \input ->
+    case p input of
+      Left err -> Left err
+      Right (output, rest) -> Right (f output, rest)
+
 instance Applicative (Parser i) where
   pure a = Parser $ \input -> Right (a, input)
 
