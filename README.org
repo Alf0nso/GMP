@@ -10,4 +10,8 @@ to Lists of Pairs
 of Things and Strings!
 #+end_quote
 
+The quote can be found on: [[https://willamette.edu/~fruehr/haskell/seuss.html][seuss]]! and also you can observe the image here:
 
+#+CAPTION: Seuss monadic parser post
+#+NAME:    Seuss monadic parser post
+[[./SeussFinal2.jpeg]]
