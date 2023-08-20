@@ -33,3 +33,10 @@ topic using modern Haskell I can advise on some tutorials:
 - [[https://vaibhavsagar.com/blog/2018/02/04/revisiting-monadic-parsing-haskell/][Revisiting 'Monadic Parsing in Haskell']] by [[https://vaibhavsagar.com/][Vaibhav Sagar]]
 - [[https://serokell.io/blog/parser-combinators-in-haskell][Parser Combinators in Haskell]] (on [[https://serokell.io/][Serokell]] companie's blog)
 - [[https://hasura.io/blog/parser-combinators-walkthrough/][Parser Combinators: a Walkthrough]]
+* Warning (Warning)
+This library is a small project of mine with the intention of learning
+about this kind of parsers and using on my small homemade
+interpreters/compilers/etc... It will probably be always a bit unstable
+and suffer weird changes. If you want an actual industry standard
+compiler of this kind you should look for: [[https://hackage.haskell.org/package/megaparsec][megaparsec]]! Or it's
+truly microscopic brother: [[https://hackage.haskell.org/package/yoctoparsec][yoctoparsec]]!
