@@ -19,9 +19,6 @@ import Control.Applicative (Alternative
                            , (<|>)
                            , liftA2)
 import Data.List (nub)
--- import Data.Char
--- import Tokenizer ( Token(..)
---                  , tokenizer )
 
 {- Types and Data types -}
 data Error i = EndOfInput
@@ -126,3 +123,4 @@ many1 p = liftA2 (:) p $ many p
 sepBy, sepBy1 :: (Eq i) => Parser i i -> Parser i f -> Parser i [i]
 sepBy  p s = sepBy1 p s <|> pure []
 sepBy1 p s = liftA2 (:) p $ many (s >> p)
+-----------------------------------------
