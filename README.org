@@ -10,7 +10,8 @@ to Lists of Pairs
 of Things and Strings!
 #+end_quote
 
-The quote can be found on: [[https://willamette.edu/~fruehr/haskell/seuss.html][seuss]]! and also you can observe the image here:
+The quote can be found on: [[https://willamette.edu/~fruehr/haskell/seuss.html][seuss]]! and also you can observe the image
+here:
 
 #+CAPTION: Seuss monadic parser post
 #+NAME:    Seuss monadic parser post
@@ -20,3 +21,15 @@ The quote can be found on: [[https://willamette.edu/~fruehr/haskell/seuss.html][
 The majority of tutorials, blog posts, and general information around
 the web related to Haskell's Parser Monads always goes back to the
 paper: [[https://www.cs.nott.ac.uk/~pszgmh/pearl.pdf][Monadic Parsing in Haskell]] (by Graham Hutton and Erik Meijer).
+Like mentioned on the abstract, it's a tutorial on how to define
+recursive descent parsers in Haskell, making use of the structuring
+capabilities of the language (coff coff Monads). This paper has
+literally my age (it was published in 1998), and one could confirm that
+it has indeed aged quite gracefully. Although the code associated with
+the paper still probably runs with some help, it is a bit outdated in
+regards to modern Haskell. If curious about what can be done about this
+topic using modern Haskell I can advise on some tutorials:
+
+- [[https://vaibhavsagar.com/blog/2018/02/04/revisiting-monadic-parsing-haskell/][Revisiting 'Monadic Parsing in Haskell']] by [[https://vaibhavsagar.com/][Vaibhav Sagar]]
+- [[https://serokell.io/blog/parser-combinators-in-haskell][Parser Combinators in Haskell]] (on [[https://serokell.io/][Serokell]] companie's blog)
+- [[https://hasura.io/blog/parser-combinators-walkthrough/][Parser Combinators: a Walkthrough]]
