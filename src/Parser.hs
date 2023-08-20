@@ -8,10 +8,15 @@ module Parser
   , any
   , try
   , choice
+  , many, many1
+  , sepBy, sepBy1
   ) where
 
 import Prelude hiding (any)
-import Control.Applicative (Alternative (..))
+import Control.Applicative (Alternative
+                           , empty
+                           , (<|>)
+                           , liftA2)
 import Data.List (nub)
 -- import Data.Char
 -- import Tokenizer ( Token(..)
@@ -92,7 +97,9 @@ any :: Parser i i
 any = Parser $ \input -> case input of
   t:rest -> Right (t, rest)
   []     -> Left [ExpectedSomething]
+--------------------------------------
 
+{- Backtracking -}
 try :: Parser i i -> Parser i i
 try p = Parser $ \input -> case parse p input of
   Left err -> Left err
@@ -100,4 +107,13 @@ try p = Parser $ \input -> case parse p input of
 
 choice :: (Eq i) => i -> [Parser i i] -> Parser i i
 choice expected = foldr (<|>) (Parser $ \_ -> Left [NoMatch expected])
-------------------------------------------------------------
+----------------------------------------------------------------------
+
+{- Repetition -}
+many, many1 :: (Eq i) => Parser i i -> Parser i [i]
+many  p = many1 p <|> return []
+many1 p = liftA2 (:) p $ many p
+
+sepBy, sepBy1 :: (Eq i) => Parser i i -> Parser i f -> Parser i [i]
+sepBy  p s = sepBy1 p s <|> pure []
+sepBy1 p s = liftA2 (:) p $ many (s >> p)
