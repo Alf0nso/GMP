@@ -1,0 +1,13 @@
+#+TITLE: Grasshopper's Monadic Parser
+#+STARTUP: fold
+#+STARTUP: latexpreview
+#+STARTUP: inlineimages
+
+#+begin_quote
+A Parser for Things
+is a function from Strings
+to Lists of Pairs
+of Things and Strings!
+#+end_quote
+
+
