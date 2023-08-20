@@ -6,6 +6,7 @@ module Parser
   , string
   , eof
   , any
+  , try
   ) where
 
 import Prelude hiding (any)
@@ -89,5 +90,11 @@ any :: Parser i i
 any = Parser $ \input -> case input of
   t:rest -> Right (t, rest)
   []     -> Left [ExpectedSomething]
-------------------------------------------------------------
 
+try :: Parser i i -> Parser i i
+try p = Parser $ \input -> case parse p input of
+  Left err -> Left err
+  success  -> success
+
+
+------------------------------------------------------------
