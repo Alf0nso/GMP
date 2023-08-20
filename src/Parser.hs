@@ -10,6 +10,7 @@ module Parser
   , choice
   , many, many1
   , sepBy, sepBy1
+  , between
   ) where
 
 import Prelude hiding (any)
@@ -112,6 +113,9 @@ try p = Parser $ \input -> case parse p input of
 
 choice :: (Eq i) => i -> [Parser i i] -> Parser i i
 choice expected = foldr (<|>) (Parser $ \_ -> Left [NoMatch expected])
+
+between :: Parser i i -> Parser i i -> Parser i i -> Parser i i
+between p1 p2 p3 = p1 *> p2 <* p3
 ----------------------------------------------------------------------
 
 {- Repetition -}
