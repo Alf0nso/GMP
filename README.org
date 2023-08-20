@@ -15,3 +15,8 @@ The quote can be found on: [[https://willamette.edu/~fruehr/haskell/seuss.html][
 #+CAPTION: Seuss monadic parser post
 #+NAME:    Seuss monadic parser post
 [[./SeussFinal2.jpeg]]
+
+* Monadic Parsing in Haskell
+The majority of tutorials, blog posts, and general information around
+the web related to Haskell's Parser Monads always goes back to the
+paper: [[https://www.cs.nott.ac.uk/~pszgmh/pearl.pdf][Monadic Parsing in Haskell]] (by Graham Hutton and Erik Meijer).
