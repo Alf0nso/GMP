@@ -1,6 +1,7 @@
 module Tokenizer
   ( Token(..)
   , tokenizer
+  , offToken
   ) where
 {-
 Building a tokenizer to use afterwards with the parser.
@@ -20,6 +21,9 @@ incrY = incrYy 1
 
 incrYy :: Integer -> Position -> Position
 incrYy i (x, y) = (x, y + i)
+
+offToken :: Char -> Token
+offToken c = Token c (0, 0)
 ------------------------------
 
 
