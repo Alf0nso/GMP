@@ -134,11 +134,13 @@ between p1 p2 p3 = p1 *> p2 <* p3
 ----------------------------------------------------------------------
 
 {- Repetition -}
-many, many1 :: (Eq i) => Parser i b -> Parser i [b]
+-- many, many1 :: (Eq i) => Parser i b -> Parser i [b]
+many, many1 :: (Alternative f, Monad f) => f a -> f [a]
 many  p = many1 p <|> return []
 many1 p = liftA2 (:) p $ many p
 
-sepBy, sepBy1 :: (Eq i) => Parser i i -> Parser i f -> Parser i [i]
+-- sepBy, sepBy1 :: (Eq i) => Parser i i -> Parser i f -> Parser i [i]
+sepBy, sepBy1 :: (Alternative f, Monad f) => f a -> f b -> f [a]
 sepBy  p s = sepBy1 p s <|> pure []
 sepBy1 p s = (:) <$> p <*> many (s *> p)
 -----------------------------------------
