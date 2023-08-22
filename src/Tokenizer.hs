@@ -1,9 +1,14 @@
 module Tokenizer
   ( Token(..)
+  , Tokenizer.isDigit
+  , Tokenizer.isLetter
+  , Tokenizer.isSpace
   , tokenizer
   , offToken
   , tokenString
   ) where
+
+import Data.Char
 {-
 Building a tokenizer to use afterwards with the parser.
 -}
@@ -37,6 +42,18 @@ instance Show Token where
 instance Eq Token where
   Token c1 _ == Token c2 _ = c1 == c2
   Token c1 _ /= Token c2 _ = c1 /= c2
+
+appToken :: (Char -> a) -> Token -> a
+appToken f (Token c _) = f c
+
+isDigit :: Token -> Bool
+isDigit token = appToken Data.Char.isDigit token
+
+isLetter :: Token -> Bool
+isLetter token = appToken Data.Char.isLetter token
+
+isSpace :: Token -> Bool
+isSpace token = appToken Data.Char.isSpace token
 ------------------------------
 
 tokenizer' :: Position -> String -> [Token]
