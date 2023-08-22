@@ -137,5 +137,5 @@ many1 p = liftA2 (:) p $ many p
 
 sepBy, sepBy1 :: (Eq i) => Parser i i -> Parser i f -> Parser i [i]
 sepBy  p s = sepBy1 p s <|> pure []
-sepBy1 p s = liftA2 (:) p $ many (s >> p)
+sepBy1 p s = (:) <$> p <*> many (s *> p)
 -----------------------------------------
