@@ -1,11 +1,13 @@
 module Tokenizer
   ( Token(..)
+  , offToken
   , Tokenizer.isDigit
   , Tokenizer.isLetter
   , Tokenizer.isSpace
   , tokenizer
-  , offToken
   , tokenString
+  , destoken
+  , destokenize
   ) where
 
 import Data.Char
@@ -68,3 +70,9 @@ tokenizer = tokenizer' (1,1)
 
 tokenString :: String -> [Token]
 tokenString = map offToken
+
+destoken :: Token -> Char
+destoken (Token c _) = c
+
+destokenize :: [Token] -> String
+destokenize = map destoken
