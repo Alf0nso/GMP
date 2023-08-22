@@ -32,7 +32,7 @@ data Token    = Token Char Position
 
 {- Instances -}
 instance Show Token where
-  show (Token c p) = [c] ++ " " ++ show p
+  show (Token c p) = show c ++ " " ++ show p
 
 instance Eq Token where
   Token c1 _ == Token c2 _ = c1 == c2
