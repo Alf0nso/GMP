@@ -2,6 +2,7 @@ module Tokenizer
   ( Token(..)
   , tokenizer
   , offToken
+  , tokenString
   ) where
 {-
 Building a tokenizer to use afterwards with the parser.
@@ -26,7 +27,6 @@ offToken :: Char -> Token
 offToken c = Token c (0, 0)
 ------------------------------
 
-
 {- Token related -}
 data Token    = Token Char Position
               deriving (Show)
@@ -47,3 +47,6 @@ tokenizer' pos (c:string)    =
 
 tokenizer :: String -> [Token]
 tokenizer = tokenizer' (1,1)
+
+tokenString :: String -> [Token]
+tokenString = map offToken
