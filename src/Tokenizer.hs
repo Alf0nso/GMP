@@ -29,9 +29,11 @@ offToken c = Token c (0, 0)
 
 {- Token related -}
 data Token    = Token Char Position
-              deriving (Show)
 
 {- Instances -}
+instance Show Token where
+  show (Token c p) = [c] ++ " " ++ show p
+
 instance Eq Token where
   Token c1 _ == Token c2 _ = c1 == c2
   Token c1 _ /= Token c2 _ = c1 /= c2
