@@ -27,7 +27,7 @@ data Error i = EndOfInput
              | Unexpected i
              | Expected i i
              | Empty
-             | NoMatch i
+             | NoMatch String
              deriving (Show, Eq)
 
 newtype Parser i o =
@@ -108,7 +108,7 @@ try p = Parser $ \input -> case parse p input of
   Left err -> Left err
   success  -> success
 
-choice :: (Eq i) => i -> [Parser i i] -> Parser i i
+choice :: (Eq i) => String -> [Parser i i] -> Parser i i
 choice expected = foldr (<|>) (Parser $ \_ -> Left [NoMatch expected])
 
 between :: Parser i i -> Parser i i -> Parser i i -> Parser i i
