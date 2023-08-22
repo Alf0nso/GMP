@@ -108,7 +108,7 @@ try p = Parser $ \input -> case parse p input of
   Left err -> Left err
   success  -> success
 
-choice :: (Eq i) => String -> [Parser i i] -> Parser i i
+choice :: (Eq i) => String -> [Parser i b] -> Parser i b
 choice expected = foldr (<|>) (Parser $ \_ -> Left [NoMatch expected])
 
 between :: Parser i i -> Parser i i -> Parser i i -> Parser i i
