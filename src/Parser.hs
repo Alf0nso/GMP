@@ -134,7 +134,7 @@ between p1 p2 p3 = p1 *> p2 <* p3
 ----------------------------------------------------------------------
 
 {- Repetition -}
-many, many1 :: (Eq i) => Parser i i -> Parser i [i]
+many, many1 :: (Eq i) => Parser i b -> Parser i [b]
 many  p = many1 p <|> return []
 many1 p = liftA2 (:) p $ many p
 
