@@ -11,6 +11,7 @@ module Parser
   , many, many1
   , sepBy, sepBy1
   , between
+  , (<|>)
   ) where
 
 import Prelude hiding (any)
