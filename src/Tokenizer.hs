@@ -39,9 +39,8 @@ instance Eq Token where
 
 tokenizer' :: Position -> String -> [Token]
 tokenizer' _   []            = []
-tokenizer' pos (' ':string)  = tokenizer' (incrX pos)    string
-tokenizer' pos ('\t':string) = tokenizer' (incrXx 4 pos) string
-tokenizer' pos ('\n':string) = tokenizer' (incrY pos)    string
+tokenizer' pos ('\n':string) =
+  (Token '\n' pos):tokenizer' (incrY pos) string
 tokenizer' pos (c:string)    =
   (Token c pos):tokenizer' (incrX pos) string
 
