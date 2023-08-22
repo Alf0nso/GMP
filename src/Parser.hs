@@ -12,12 +12,14 @@ module Parser
   , sepBy, sepBy1
   , between
   , (<|>)
+  , some
   ) where
 
 import Prelude hiding (any)
 import Control.Applicative (Alternative
                            , empty
                            , (<|>)
+                           , some
                            , liftA2)
 import Data.List (nub)
 
