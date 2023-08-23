@@ -128,7 +128,7 @@ try p = Parser $ \input -> case parse p input of
 choice :: (Foldable t, Eq i) => String -> t (Parser i a) -> Parser i a
 choice expected = foldr (<|>) (Parser $ \_ -> Left [NoMatch expected])
 
-between :: Parser i i -> Parser i i -> Parser i i -> Parser i i
+between :: Applicative f => f a -> f b -> f c -> f b
 between p1 p2 p3 = p1 *> p2 <* p3
 ----------------------------------------------------------------------
 
