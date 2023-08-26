@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 module Parser
   ( Parser(..)
   , token
@@ -34,17 +35,17 @@ data Error i = EndOfInput
              deriving (Eq)
 
 instance (Show i) => Show (Error i) where
-  show (EndOfInput) = "End of input"
+  show EndOfInput = "End of input"
   show (ExpectedEndOfInput i) =
     "Expected end of input but got " ++ show i
-  show (ExpectedSomething) =
+  show ExpectedSomething =
     "Expected something"
   show (Unexpected i) =
     "Unexpected " ++ show i
   show (Expected i1 i2) =
     "Expected " ++ show i1 ++
     " but got " ++ show i2
-  show (Empty) = "Empty"
+  show Empty = "Empty"
   show (NoMatch str) =
     "No match for " ++ str
 
@@ -52,7 +53,8 @@ newtype Parser i o =
   Parser { parse :: [i] -> Either [Error i] (o, [i]) }
 
 token :: (i -> Error i) -> (i -> Bool) -> Parser i i
-token err predicate = Parser $ \input -> case input of
+token err predicate =
+  Parser $ \case
   [] -> Left [EndOfInput]
   test : rest
     | predicate test -> Right (test, rest)
@@ -105,16 +107,15 @@ char :: Eq i => i -> Parser i i
 char i = token (Expected i) (== i)
 
 string :: Eq i => [i] -> Parser i [i]
-string []  = pure []
-string (c:str) = (:) <$> char c <*> string str
+string = foldr (\c -> (<*>) ((:) <$> char c)) (pure [])
 
 eof :: Parser i ()
-eof = Parser $ \input -> case input of
+eof = Parser $ \case
   []    -> Right ((), [])
   (t:_) -> Left [ExpectedEndOfInput t]
 
 any :: Parser i i
-any = Parser $ \input -> case input of
+any = Parser $ \case
   t:rest -> Right (t, rest)
   []     -> Left [ExpectedSomething]
 --------------------------------------
@@ -142,4 +143,14 @@ many1 p = liftA2 (:) p $ many p
 sepBy, sepBy1 :: (Alternative f, Monad f) => f a -> f b -> f [a]
 sepBy  p s = sepBy1 p s <|> pure []
 sepBy1 p s = (:) <$> p <*> many (s *> p)
+
+chainl1 p op = do x <- p
+                  rest x
+                    where
+                      rest x = do f <- op
+                                  y <- p
+                                  rest (f x y)
+                                    <|> return x
+                  
 -----------------------------------------
+
