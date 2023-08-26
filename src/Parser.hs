@@ -1,6 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Parser
   ( Parser(..)
+  , Error(..)
   , token
   , satisfy
   , char
@@ -158,5 +159,4 @@ chainl1 p op = do x <- p
                                   y <- p
                                   rest (f x y)
                                     <|> return x
-                  
 ------------------------------------------------------------------
