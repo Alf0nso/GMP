@@ -10,6 +10,7 @@ module Parser
   , try
   , choice
   , many, many1
+  , chainl, chainl1
   , sepBy, sepBy1
   , between
   , (<|>)
@@ -126,24 +127,30 @@ try p = Parser $ \input -> case parse p input of
   Left err -> Left err
   success  -> success
 
-choice :: (Foldable t, Eq i) => String -> t (Parser i a) -> Parser i a
-choice expected = foldr (<|>) (Parser $ \_ -> Left [NoMatch expected])
+choice
+  :: (Foldable t, Eq i) => String -> t (Parser i a) -> Parser i a
+choice expected =
+  foldr (<|>) (Parser $ \_ -> Left [NoMatch expected])
 
 between :: Applicative f => f a -> f b -> f c -> f b
 between p1 p2 p3 = p1 *> p2 <* p3
-----------------------------------------------------------------------
+-------------------------------------------------------------------
 
 {- Repetition -}
--- many, many1 :: (Eq i) => Parser i b -> Parser i [b]
 many, many1 :: (Alternative f, Monad f) => f a -> f [a]
 many  p = many1 p <|> return []
 many1 p = liftA2 (:) p $ many p
 
--- sepBy, sepBy1 :: (Eq i) => Parser i i -> Parser i f -> Parser i [i]
 sepBy, sepBy1 :: (Alternative f, Monad f) => f a -> f b -> f [a]
 sepBy  p s = sepBy1 p s <|> pure []
 sepBy1 p s = (:) <$> p <*> many (s *> p)
 
+
+chainl :: (Monad f, Alternative f) =>
+          f a -> f (a -> a -> a) -> a -> f a
+chainl p op x = chainl1 p op <|> return x
+
+chainl1 :: (Monad m, Alternative m) => m b -> m (b -> b -> b) -> m b
 chainl1 p op = do x <- p
                   rest x
                     where
@@ -152,5 +159,4 @@ chainl1 p op = do x <- p
                                   rest (f x y)
                                     <|> return x
                   
------------------------------------------
-
+------------------------------------------------------------------
