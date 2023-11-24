@@ -2,7 +2,7 @@ name:                GMP
 version:             0.1.0.0
 -- synopsis:
 -- description:
-homepage:            https://github.com/Alf0nso/GMP/blob/main/README.org
+homepage:            https://github.com/Alf0nso/GMP/README.org
 license:             BSD3
 license-file:        LICENSE
 author:              Afonso Pinto Cardoso Rafael
@@ -32,3 +32,16 @@ library
 source-repository head
   type:     git
   location: https://github.com/Alf0nso/GMP
+
+test-suite GMPTesting
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_GMP
+  hs-source-dirs:
+      test 
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , GMP
+  default-language: Haskell2010
