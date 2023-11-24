@@ -11,9 +11,7 @@ module Tokenizer
   ) where
 
 import Data.Char
-{-
-Building a tokenizer to use afterwards with the parser.
--}
+{- Building a tokenizer to use afterwards with the parser. -}
 
 {- Position related -}
 type Position = (Integer, Integer)
