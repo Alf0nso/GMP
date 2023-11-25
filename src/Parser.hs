@@ -104,8 +104,7 @@ try p = Parser $ \input -> case parse p input of
   Left err -> Left err
   success  -> success
 
-choice
-  :: (Foldable t, Eq i) => String -> t (Parser i a) -> Parser i a
+choice :: (Foldable t, Eq i) => String -> t (Parser i a) -> Parser i a
 choice expected =
   foldr (<|>) (Parser $ \_ -> Left [NoMatch expected])
 
@@ -122,9 +121,7 @@ sepBy, sepBy1 :: (Alternative f, Monad f) => f a -> f b -> f [a]
 sepBy  p s = sepBy1 p s <|> pure []
 sepBy1 p s = (:) <$> p <*> many (s *> p)
 
-
-chainl :: (Monad f, Alternative f) =>
-          f a -> f (a -> a -> a) -> a -> f a
+chainl :: (Monad f, Alternative f) => f a -> f (a -> a -> a) -> a -> f a
 chainl p op x = chainl1 p op <|> return x
 
 chainl1 :: (Monad m, Alternative m) => m b -> m (b -> b -> b) -> m b
