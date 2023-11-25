@@ -7,22 +7,24 @@ import Tokenizer
   , isDigit
   , offToken
   , destokenize
-  , tokenString
+--  , tokenString
   )
 import Parser
   ( Parser(..)
-  , between
-  , choice
+--  , between
+--  , choice
   , (<|>)
   , satisfy
   , char
-  , string
+--  , string
   , many
-  , many1
-  , sepBy1
+--  , many1
+--  , sepBy1
   )
-import Errors
-  ( Error(..) )
+-- import Errors
+--   ( Error(..) )
+import Debugger
+  ( debuggerParse )
 
 {- A parser for a really basic calculator which
 only accepts: numbers, adition, subtraction,
@@ -56,17 +58,20 @@ sub' = symbol '-'
 mul' = symbol '*'
 div' = symbol '/'
 
--- add :: Parser Token CT
--- add = do foldl1 Add <$> sepBy1 term spaces
-
 nums :: Parser Token String
 nums = destokenize <$> digits'
 
 digits :: Parser Token CT
 digits = Num <$> nums
 
--- term :: Parser Token CT
--- term = digits <|> add
+add :: Parser Token CT
+add = do _ <- spaces
+         d <- digits
+         _ <- add'
+         Add d <$> term
 
--- main :: IO ()
--- main = debuggerParse (tokenizer "123") digits
+term :: Parser Token CT
+term = add <|> digits
+
+main :: IO ()
+main = debuggerParse (tokenizer "12+1+3") term
