@@ -33,6 +33,7 @@ topic using modern Haskell I can advise on some tutorials:
 - [[https://vaibhavsagar.com/blog/2018/02/04/revisiting-monadic-parsing-haskell/][Revisiting 'Monadic Parsing in Haskell']] by [[https://vaibhavsagar.com/][Vaibhav Sagar]]
 - [[https://serokell.io/blog/parser-combinators-in-haskell][Parser Combinators in Haskell]] (on [[https://serokell.io/][Serokell]] companie's blog)
 - [[https://hasura.io/blog/parser-combinators-walkthrough/][Parser Combinators: a Walkthrough]]
+- [[https://cseweb.ucsd.edu/classes/wi13/cse230-a/lectures/lec-parsers.html][CSE230 Wi13 - Monadic Parsing]] (UCSanDiego class on monadic parsing)
 * Warning (Warning)
 This library is a small project of mine with the intention of learning
 and using to implement my interpreters/compilers/etc... It will probably
