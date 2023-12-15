@@ -47,21 +47,21 @@ appToken :: (Char -> a) -> Token -> a
 appToken f (Token c _) = f c
 
 isDigit :: Token -> Bool
-isDigit token = appToken Data.Char.isDigit token
+isDigit = appToken Data.Char.isDigit
 
 isLetter :: Token -> Bool
-isLetter token = appToken Data.Char.isLetter token
+isLetter = appToken Data.Char.isLetter
 
 isSpace :: Token -> Bool
-isSpace token = appToken Data.Char.isSpace token
+isSpace = appToken Data.Char.isSpace
 ------------------------------
 
 tokenizer' :: Position -> String -> [Token]
 tokenizer' _   []            = []
 tokenizer' pos ('\n':string) =
-  (Token '\n' pos):tokenizer' (incrY pos) string
+  Token '\n' pos:tokenizer' (incrY pos) string
 tokenizer' pos (c:string)    =
-  (Token c pos):tokenizer' (incrX pos) string
+  Token c pos:tokenizer' (incrX pos) string
 
 tokenizer :: String -> [Token]
 tokenizer = tokenizer' (1,1)
