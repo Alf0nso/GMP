@@ -11,6 +11,6 @@ debuggerParse tokens parser = solveParser $ parse parser tokens
 
 solveParser :: (Show t, Show p) => Either [Error t] (p, [t]) -> IO ()
 solveParser = \case
-  Left err             -> putStrLn (show err)
+  Left err             -> print err
   Right (parsed, left) -> putStrLn $ "Parsing output: " ++ show parsed
                          ++ "\n" ++ "Left: " ++ show left
