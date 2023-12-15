@@ -1,3 +1,4 @@
+{-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE LambdaCase #-}
 module Parser
   ( Parser(..)
@@ -8,6 +9,7 @@ module Parser
   , string
   , eof
   , any
+  , oneOf
   , try
   , choice
   , many, many1
@@ -96,6 +98,9 @@ any :: Parser i i
 any = Parser $ \case
   t:rest -> Right (t, rest)
   []     -> Left [ExpectedSomething]
+
+oneOf :: (Foldable t, Eq i) => t i -> Parser i i
+oneOf cs = satisfy (`elem` cs)
 --------------------------------------
 
 {- Backtracking -}
@@ -125,11 +130,9 @@ chainl :: (Monad f, Alternative f) => f a -> f (a -> a -> a) -> a -> f a
 chainl p op x = chainl1 p op <|> return x
 
 chainl1 :: (Monad m, Alternative m) => m b -> m (b -> b -> b) -> m b
-chainl1 p op = do x <- p
-                  rest x
+chainl1 p op = do p >>= rest
                     where
-                      rest x = do f <- op
-                                  y <- p
-                                  rest (f x y)
-                                    <|> return x
+                      rest x = (do f <- op
+                                   y <- p
+                                   rest (f x y)) <|> return x
 ------------------------------------------------------------------
