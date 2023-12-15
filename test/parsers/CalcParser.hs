@@ -1,77 +1,59 @@
-{-# LANGUAGE LambdaCase #-}
 import Tokenizer
   ( Token(..)
   , tokenizer
-  , isLetter
   , isSpace
   , isDigit
   , offToken
-  , destokenize
---  , tokenString
-  )
+  , destokenize )
 import Parser
   ( Parser(..)
---  , between
---  , choice
+  , between
   , (<|>)
   , satisfy
   , char
---  , string
   , many
---  , many1
---  , sepBy1
-  )
--- import Errors
---   ( Error(..) )
+  , chainl1 )
 import Debugger
   ( debuggerParse )
 
-{- A parser for a really basic calculator which
-only accepts: numbers, adition, subtraction,
-multiplication and division. -}
-data CT = Num String
-        | Add CT CT
-        | Sub CT CT
-        | Mul CT CT
-        | Div CT CT
-        deriving Show
-
-space, digit, letter :: Parser Token Token
+space, digit :: Parser Token Token
 space  = satisfy isSpace
-letter = satisfy isLetter
 digit  = satisfy isDigit
 
 spaces, digits' :: Parser Token [Token]
 spaces = many space
 digits' = many digit
 
+digits :: Parser Token Double
+digits = do
+  _ <- spaces
+  c <- digits'
+  _ <- spaces
+  return (read $ destokenize c)
+
 symbol :: Char -> Parser Token Token
-symbol c = char (offToken c)
+symbol c = char (offToken c) <* spaces
 
 lparen, rparen :: Parser Token Token
 lparen = symbol '(' <* spaces
 rparen = spaces *> symbol ')'
 
-add', sub', mul', div' :: Parser Token Token
-add' = symbol '+'
-sub' = symbol '-'
-mul' = symbol '*'
-div' = symbol '/'
+add', sub', mul', div' :: (Fractional a) => Parser Token (a -> a -> a)
+add' = symbol '+' >> return (+)
+sub' = symbol '-' >> return (-)
+mul' = symbol '*' >> return (*)
+div' = symbol '/' >> return (/)
 
-nums :: Parser Token String
-nums = destokenize <$> digits'
+addOp :: (Fractional a) => Parser Token (a -> a -> a)
+addOp = add' <|> sub'
 
-digits :: Parser Token CT
-digits = Num <$> nums
+mulOp :: (Fractional a) => Parser Token (a -> a -> a)
+mulOp = mul' <|> div'
 
-add :: Parser Token CT
-add = do _ <- spaces
-         d <- digits
-         _ <- add'
-         Add d <$> term
-
-term :: Parser Token CT
-term = add <|> digits
+expr, term, factor :: Parser Token Double
+expr   = term   `chainl1` addOp
+term   = factor `chainl1` mulOp
+factor = between lparen expr rparen <|> digits
 
 main :: IO ()
-main = debuggerParse (tokenizer "12+1+3") term
+main = debuggerParse (tokenizer "(1-2)*3") expr
