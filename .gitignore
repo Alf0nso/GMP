@@ -1,4 +1,5 @@
 # Stack related files
 .stack-work/
+dist-newstyle/
 TAGS
 stack.yaml.lock
