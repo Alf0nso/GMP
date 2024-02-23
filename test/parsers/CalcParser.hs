@@ -56,4 +56,5 @@ term   = factor `chainl1` mulOp
 factor = between lparen expr rparen <|> digits
 
 main :: IO ()
-main = debuggerParse (tokenizer "(1-2)*3") expr
+main = do str <- getLine
+          debuggerParse (tokenizer str) expr
