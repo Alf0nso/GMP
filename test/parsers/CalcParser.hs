@@ -12,6 +12,7 @@ import Parser
   , satisfy
   , char
   , many
+  , many1
   , chainl1 )
 import Debugger
   ( debuggerParse )
@@ -22,7 +23,7 @@ digit  = satisfy isDigit
 
 spaces, digits' :: Parser Token [Token]
 spaces = many space
-digits' = many digit
+digits' = many1 digit
 
 digits :: Parser Token Double
 digits = do
