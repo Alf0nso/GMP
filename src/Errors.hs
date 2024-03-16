@@ -1,4 +1,7 @@
-module Errors (Error(..)) where
+module Errors (Error(..)
+              , prettyErrors
+              , printErrors
+              ) where
 
 data Error i = EndOfInput
              | ExpectedEndOfInput i
@@ -20,3 +23,9 @@ instance (Show i) => Show (Error i) where
   show Empty                  = "Empty"
   show (NoMatch str)          = "No match for " ++ str
 
+prettyErrors :: (Show i) => [Error i] -> String
+prettyErrors []     = ""
+prettyErrors (e:es) = "| " <> show e <> "\n" <> prettyErrors es 
+
+printErrors :: (Show i) => [Error i] -> String
+printErrors errors = "| \n" <> prettyErrors errors
