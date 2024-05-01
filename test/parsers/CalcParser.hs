@@ -56,6 +56,9 @@ expr   = term   `chainl1` addOp
 term   = factor `chainl1` mulOp
 factor = between lparen expr rparen <|> digits
 
+executeParser :: String -> IO ()
+executeParser str = debuggerParse (tokenizer str) expr
+
 main :: IO ()
 main = do str <- getLine
           debuggerParse (tokenizer str) expr

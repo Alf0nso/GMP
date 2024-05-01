@@ -54,6 +54,7 @@ isLetter = appToken Data.Char.isLetter
 
 isSpace :: Token -> Bool
 isSpace = appToken Data.Char.isSpace
+
 ------------------------------
 
 tokenizer' :: Position -> String -> [Token]
