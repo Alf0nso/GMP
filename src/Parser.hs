@@ -10,6 +10,7 @@ module Parser
   , eof
   , any
   , oneOf
+  , symbol
   , try
   , choice
   , many, many1
@@ -89,6 +90,9 @@ char i = token (Expected i) (== i)
 string :: Eq i => [i] -> Parser i [i]
 string = foldr (\c -> (<*>) ((:) <$> char c)) (pure [])
 
+symbol :: Eq i => c -> (c -> i) -> Parser i i
+symbol c f = char (f c)
+
 eof :: Parser i ()
 eof = Parser $ \case
   []    -> Right ((), [])
@@ -101,6 +105,7 @@ any = Parser $ \case
 
 oneOf :: (Foldable t, Eq i) => t i -> Parser i i
 oneOf cs = satisfy (`elem` cs)
+
 --------------------------------------
 
 {- Backtracking -}
