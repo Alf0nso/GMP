@@ -1,49 +1,36 @@
 import Tokenizer
   ( Token(..)
   , tokenizer
-  , isSpace
-  , isDigit
-  , offToken
   , destokenize )
 import Parser
   ( Parser(..)
   , between
   , (<|>)
-  , satisfy
-  , char
-  , many
-  , many1
   , chainl1 )
+import Basics
+  ( spaces
+  , digits
+  , charSymbol
+  )
 import Debugger
   ( debuggerParse )
 
-space, digit :: Parser Token Token
-space  = satisfy isSpace
-digit  = satisfy isDigit
-
-spaces, digits' :: Parser Token [Token]
-spaces = many space
-digits' = many1 digit
-
-digits :: Parser Token Double
-digits = do
+digits' :: Parser Token Double
+digits' = do
   _ <- spaces
-  c <- digits'
+  c <- digits
   _ <- spaces
   return (read $ destokenize c)
 
-symbol :: Char -> Parser Token Token
-symbol c = char (offToken c) <* spaces
-
 lparen, rparen :: Parser Token Token
-lparen = symbol '(' <* spaces
-rparen = spaces *> symbol ')'
+lparen = charSymbol '(' <* spaces
+rparen = spaces *> charSymbol ')'
 
 add', sub', mul', div' :: (Fractional a) => Parser Token (a -> a -> a)
-add' = symbol '+' >> return (+)
-sub' = symbol '-' >> return (-)
-mul' = symbol '*' >> return (*)
-div' = symbol '/' >> return (/)
+add' = charSymbol '+' >> return (+)
+sub' = charSymbol '-' >> return (-)
+mul' = charSymbol '*' >> return (*)
+div' = charSymbol '/' >> return (/)
 
 addOp :: (Fractional a) => Parser Token (a -> a -> a)
 addOp = add' <|> sub'
@@ -54,11 +41,11 @@ mulOp = mul' <|> div'
 expr, term, factor :: Parser Token Double
 expr   = term   `chainl1` addOp
 term   = factor `chainl1` mulOp
-factor = between lparen expr rparen <|> digits
+factor = between lparen expr rparen <|> digits'
 
 executeParser :: String -> IO ()
 executeParser str = debuggerParse (tokenizer str) expr
 
 main :: IO ()
 main = do str <- getLine
-          debuggerParse (tokenizer str) expr
+          executeParser str
