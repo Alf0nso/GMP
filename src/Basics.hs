@@ -4,12 +4,14 @@ module Basics
   , spaces
   , digits
   , charSymbol
+  , executeParserD
   ) where
 import Tokenizer
   ( Token(..)
   , isSpace
   , isDigit
   , offToken
+  , tokenizer
   )
 import Parser
   ( Parser(..)
@@ -18,8 +20,8 @@ import Parser
   , many1
   , symbol
   )
-
-
+import Debugger
+  ( debuggerParse )
 
 {- Basic token functions -}
 space, digit :: Parser Token Token
@@ -34,6 +36,7 @@ charSymbol :: Char -> Parser Token Token
 charSymbol chr = symbol chr offToken <* spaces
 ------------------------------------------------------------
 
-{- Debugging basics -}
-
-------------------------------------------------------------
+{- Executing parsers -}
+executeParserD :: Show p => Parser Token p -> String -> IO ()
+executeParserD parser str = debuggerParse (tokenizer str) parser
+------------------------------------------------------------------
