@@ -1,8 +1,10 @@
 module Basics
   ( space
   , digit
+  , letter
   , spaces
   , digits
+  , letters
   , charSymbol
   , executeParserD
   ) where
@@ -10,6 +12,7 @@ import Tokenizer
   ( Token(..)
   , isSpace
   , isDigit
+  , isLetter
   , offToken
   , tokenizer
   )
@@ -24,13 +27,15 @@ import Debugger
   ( debuggerParse )
 
 {- Basic token functions -}
-space, digit :: Parser Token Token
+space, digit, letter :: Parser Token Token
 space  = satisfy isSpace
 digit  = satisfy isDigit
+letter = satisfy isLetter
 
-spaces, digits :: Parser Token [Token]
-spaces = many space
-digits = many1 digit
+spaces, digits, letters :: Parser Token [Token]
+spaces  = many space
+digits  = many1 digit
+letters = many1 letter
 
 charSymbol :: Char -> Parser Token Token
 charSymbol chr = symbol chr offToken <* spaces
