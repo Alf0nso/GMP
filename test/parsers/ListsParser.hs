@@ -1,8 +1,11 @@
 import Tokenizer
-  ( Token(..) )
+  ( Token(..)
+  , destokenize
+  )
 import Parser
   ( Parser(..)
   , between
+  , (<|>)
   , sepBy )
 import Basics
   ( spaces
@@ -11,18 +14,29 @@ import Basics
   , executeParserD
   )
 
+data List = Atom String
+          | Cons [List]
+          deriving (Show)
+
 lbracket, rbracket :: Parser Token Token
 lbracket = charSymbol '[' <* spaces
 rbracket = spaces *> charSymbol ']'
 
-list :: Parser Token [[Token]]
-list = between lbracket things rbracket
+comma :: Parser Token Token
+comma    = (charSymbol ',') <* spaces
 
-letters' :: Parser Token [Token]
-letters' = letters <* spaces
+letters' :: Parser Token List
+letters' = do l <- between spaces letters spaces
+              return $ Atom (destokenize l)
 
-things :: Parser Token [[Token]]
-things = letters' `sepBy` (charSymbol ',')
+list :: Parser Token List
+list = fmap Cons $ sepBy expr comma
+
+expr :: Parser Token List
+expr = letters' <|> do _ <- lbracket
+                       x <- list
+                       _ <- rbracket
+                       return x
 
 main :: IO ()
-main = getLine >>= executeParserD list
+main = executeParserD expr "[a, b, [aa, bb], a, c]"
