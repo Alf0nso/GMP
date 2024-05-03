@@ -16,6 +16,7 @@ module Parser
   , many, many1
   , chainl, chainl1
   , sepBy, sepBy1
+  , sepEndBy, sepEndBy1
   , between
   , (<|>)
   , some
@@ -67,7 +68,7 @@ instance Monad (Parser i) where
     case pars input of
       Left err -> Left err
       Right (out, rest) ->
-        let Parser pars' = cont out in pars' rest
+        let Parser pars' = cont out in pars' rest  
 
 instance (Eq i) => Alternative (Parser i) where
   empty = Parser $ \_ -> Left [Empty]
@@ -130,6 +131,16 @@ many1 p = liftA2 (:) p $ many p
 sepBy, sepBy1 :: (Alternative f, Monad f) => f a -> f b -> f [a]
 sepBy  p s = sepBy1 p s <|> pure []
 sepBy1 p s = (:) <$> p <*> many (s *> p)
+
+sepEndBy, sepEndBy1 :: (Alternative f, Monad f) => f a -> f b -> f [a]
+sepEndBy  p s = sepEndBy1 p s <|> return []
+sepEndBy1 p s = do { x <- p
+                   ; do { _  <- s
+                        ; xs <- sepEndBy p s
+                        ; return (x:xs)
+                        }
+                     <|> return [x]
+                   }
 
 chainl :: (Monad f, Alternative f) => f a -> f (a -> a -> a) -> a -> f a
 chainl p op x = chainl1 p op <|> return x
