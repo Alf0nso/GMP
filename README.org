@@ -34,6 +34,7 @@ topic using modern Haskell I can advise on some tutorials:
 - [[https://serokell.io/blog/parser-combinators-in-haskell][Parser Combinators in Haskell]] (on [[https://serokell.io/][Serokell]] companie's blog)
 - [[https://hasura.io/blog/parser-combinators-walkthrough/][Parser Combinators: a Walkthrough]]
 - [[https://cseweb.ucsd.edu/classes/wi13/cse230-a/lectures/lec-parsers.html][CSE230 Wi13 - Monadic Parsing]] (UCSanDiego class on monadic parsing)
+- [[https://abhinavsarkar.net/posts/json-parsing-from-scratch-in-haskell/][JSON parsing from scratch in haskell]] by [[https://abhinavsarkar.net/][Abhinav Sarkar]]
 * Warning (Warning)
 This library is a small project of mine with the intention of learning
 and using to implement my interpreters/compilers/etc... It will probably
