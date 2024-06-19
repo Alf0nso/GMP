@@ -6,6 +6,7 @@ module Basics
   , digits
   , letters
   , charSymbol
+  , stringSymbols
   , executeParserD
   ) where
 import Tokenizer
@@ -15,6 +16,7 @@ import Tokenizer
   , isLetter
   , offToken
   , tokenizer
+  , tokenString
   )
 import Parser
   ( Parser(..)
@@ -22,6 +24,7 @@ import Parser
   , many
   , many1
   , symbol
+  , string
   )
 import Debugger
   ( debuggerParse )
@@ -39,6 +42,9 @@ letters = many1 letter
 
 charSymbol :: Char -> Parser Token Token
 charSymbol chr = symbol chr offToken <* spaces
+
+stringSymbols :: String -> Parser Token [Token]
+stringSymbols str = string (tokenString str) <* spaces
 ------------------------------------------------------------
 
 {- Executing parsers -}
