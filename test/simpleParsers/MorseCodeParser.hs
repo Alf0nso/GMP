@@ -1,17 +1,12 @@
 import Tokenizer
-  ( Token(..)
-  , destokenize )
+  ( Token(..) )
 import Parser
   ( Parser(..)
-  , between
   , (<|>)
-  , chainl1
   , many )
 import Basics
-  ( spaces
-  , stringSymbols
-  , executeParserD
-  )
+  ( stringSymbols
+  , executeParserDWR )
 
 data Morse = Dot Morse
            | Dash Morse
@@ -133,6 +128,12 @@ morseCode = h <|> v <|>
 mc :: Parser Token Morse
 mc = do morse_code <- many morseCode
         return $ morseSymbols' morse_code
-  
+
+printingParser :: (Show b) => (Morse, b) -> IO ()
+printingParser (parsed, left) = putStrLn $ "Parsing output: " ++ show parsed
+                                ++ "\n" ++ "Translated: "
+                                ++ morseSymbols parsed
+                                ++ "\n" ++ "Left: " ++ show left
+
 main :: IO ()
-main = executeParserD mc "---.-..."
+main = executeParserDWR printingParser mc "-.-. .- -"
