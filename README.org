@@ -39,5 +39,5 @@ topic using modern Haskell I can advise on some tutorials:
 This library is a small project of mine with the intention of learning
 and using to implement my interpreters/compilers/etc... It will probably
 be always a bit unstable and suffer weird changes. If you want an actual
-industry standard compiler of this kind you should look for:
+industry standard parser of this kind you should look for:
 [[https://hackage.haskell.org/package/megaparsec][megaparsec]], [[https://hackage.haskell.org/package/parsec][parsec]] or the microscopic version: [[https://hackage.haskell.org/package/yoctoparsec][yoctoparsec]]!
