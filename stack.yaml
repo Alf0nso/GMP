@@ -40,6 +40,10 @@ packages:
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
 #
 # extra-deps: []
+extra-deps:
+- QuickCheck-2.14.3
+- random-1.2.1.2
+- splitmix-0.1.0.5
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
