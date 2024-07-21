@@ -8,6 +8,7 @@ module JSONparser () where
 import qualified Data.Map as Map
 import Data.Char (ord)
 import Numeric (showHex)
+import Test.QuickCheck
 
 -- Helper functions --
 intercalate :: [a] -> [[a]] -> [a]
@@ -37,7 +38,7 @@ showJSONNonASCIIChar c = drop (length (getHexStr40 c) - 4) (getHexStr40 c)
 data JSON = Null
           | JBol Bool
           | JStr String
-          | JNum  { int :: Integer, frac :: [Int], exponent :: Integer }
+          | JNum  Integer [Int] Integer
           | JArr [JSON]
           | JObj (Map.Map String JSON)
           deriving (Eq)
@@ -73,3 +74,13 @@ showJSONChar '\t' = "\\t"
 showJSONChar c
   | isControl c = "\\u" ++ showJSONNonASCIIChar c
   | otherwise = [c]
+
+-- QuickCheck stuff
+nullGen :: Gen JSON
+nullGen = pure Null
+
+boolGen :: Gen JSON
+boolGen = JBol <$> arbitrary
+
+numbGen :: Gen JSON
+numbGen = JNum <$> arbitrary <*> listOf (choose (0,9)) <*> arbitrary
