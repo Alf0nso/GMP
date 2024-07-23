@@ -33,6 +33,17 @@ getHexStr40 c = "0000" ++ showHex (ord c) ""
 
 showJSONNonASCIIChar :: Char -> [Char]
 showJSONNonASCIIChar c = drop (length (getHexStr40 c) - 4) (getHexStr40 c)
+
+{- Generators -}
+hexDigitLetters :: String
+hexDigitLetters = ['0'..'9'] ++ ['a'..'f'] ++ ['A'..'F']
+
+escapedUnicodeChar :: Gen [Char]
+escapedUnicodeChar = ("\\u" ++) <$> vectorOf 4 (elements hexDigitLetters)
+
+stringGen :: Gen String
+stringGen = concat <$> listOf
+  (oneof [ vectorOf 1 arbitraryUnicodeChar , escapedUnicodeChar ])
 ----------------------
 
 data JSON = Null
