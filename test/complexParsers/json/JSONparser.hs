@@ -87,11 +87,8 @@ showJSONChar c
   | otherwise = [c]
 
 -- QuickCheck stuff
-nullGen :: Gen JSON
+nullGen, boolGen, numbGen, striGen :: Gen JSON
 nullGen = pure Null
-
-boolGen :: Gen JSON
 boolGen = JBol <$> arbitrary
-
-numbGen :: Gen JSON
 numbGen = JNum <$> arbitrary <*> listOf (choose (0,9)) <*> arbitrary
+striGen = JStr <$> stringGen
