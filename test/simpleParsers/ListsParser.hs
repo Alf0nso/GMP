@@ -23,14 +23,14 @@ lbracket = charSymbol '[' <* spaces
 rbracket = spaces *> charSymbol ']'
 
 comma :: Parser Token Token
-comma    = (charSymbol ',') <* spaces
+comma    = charSymbol ',' <* spaces
 
 letters' :: Parser Token List
 letters' = do l <- between spaces letters spaces
               return $ Atom (destokenize l)
 
 list :: Parser Token List
-list = fmap Cons $ sepBy expr comma
+list = Cons <$> sepBy expr comma
 
 expr :: Parser Token List
 expr = letters' <|> do _ <- lbracket
