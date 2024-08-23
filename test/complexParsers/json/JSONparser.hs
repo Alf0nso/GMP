@@ -87,8 +87,31 @@ showJSONChar c
   | otherwise = [c]
 
 -- QuickCheck stuff
+-- Scalar generatores
 nullGen, boolGen, numbGen, striGen :: Gen JSON
 nullGen = pure Null
 boolGen = JBol <$> arbitrary
 numbGen = JNum <$> arbitrary <*> listOf (choose (0,9)) <*> arbitrary
 striGen = JStr <$> stringGen
+
+-- Composite generators
+array, object :: Int -> Gen JSON
+array = fmap JArr . scale (`div` 2) . listOf . fiveVals . (`div` 2)
+object n = JObj <$> Map.fromList <$> keysValues n
+
+keysValues :: Int -> Gen [(String, JSON)]
+keysValues n = scale (`div` 2) $ listOf $ (,) <$> stringGen <*> (fiveVals (div n 2))
+
+scalar :: [Gen JSON]
+scalar    = [nullGen, boolGen, numbGen, striGen]
+
+composite :: Int -> [Gen JSON]
+composite n = [array n, object n]
+
+value :: Int -> Int -> Int -> Gen JSON
+value s c n = frequency [(s, oneof scalar), (c, oneof (composite n))]
+
+fiveVals :: Int -> Gen JSON
+fiveVals n
+  | n < 5     = value 4 1 n
+  | otherwise = value 1 4 n
