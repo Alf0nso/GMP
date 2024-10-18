@@ -18,7 +18,7 @@ module Parser
   , sepBy, sepBy1
   , sepEndBy, sepEndBy1
   , between
-  , (<|>)
+  , (<|>), ($>)
   , some
   ) where
 
@@ -49,10 +49,13 @@ instance Functor (Parser i) where
     case p input of
       Left err -> Left err
       Right (output, rest) -> Right (f output, rest)
+  (<$) = fmap . const
+
+($>) :: Functor f => f a -> b -> f b
+($>) = flip (<$)
 
 instance Applicative (Parser i) where
   pure a = Parser $ \input -> Right (a, input)
-
   Parser p1 <*> Parser p2 = Parser $ \input ->
     case p1 input of
       Left err -> Left err
@@ -62,8 +65,7 @@ instance Applicative (Parser i) where
           Right (output, rest') -> Right (p1' output, rest')
 
 instance Monad (Parser i) where
-  return = pure
-  
+  return = pure  
   Parser pars >>= cont = Parser $ \input ->
     case pars input of
       Left err -> Left err
@@ -72,7 +74,6 @@ instance Monad (Parser i) where
 
 instance (Eq i) => Alternative (Parser i) where
   empty = Parser $ \_ -> Left [Empty]
-
   Parser p1 <|> Parser p2 = Parser $ \input ->
     case p1 input of
       Left err -> case p2 input of
