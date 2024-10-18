@@ -10,6 +10,20 @@ import Data.Char (ord)
 import Numeric (showHex)
 import Test.QuickCheck
 
+import Tokenizer
+  ( Token(..)
+  , destokenize )
+import Parser
+  ( Parser(..)
+  , between
+  , (<|>)
+  , ($>)
+  , chainl1 )
+import Basics
+  ( executeParserD
+  , stringSymbols
+  )
+
 -- Helper functions --
 intercalate :: [a] -> [[a]] -> [a]
 intercalate xs xss = concat (intersperse xs xss)
@@ -115,3 +129,10 @@ fiveVals :: Int -> Gen JSON
 fiveVals n
   | n < 5     = value 4 1 n
   | otherwise = value 1 4 n
+
+-- Parsing
+nullP :: Parser Token JSON
+nullP = stringSymbols "null" $> Null
+
+boolP :: Parser Token JSON
+boolP = stringSymbols ""
