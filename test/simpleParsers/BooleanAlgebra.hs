@@ -32,25 +32,33 @@ instance Show B where
   show F       = "⊥"
   show (Var s) = s
 
--- (∧), conjunction, and :: B -> B -> B
--- conjunction F F = F
--- conjunction T F = F
--- conjunction F T = T
--- conjunction T T = T
--- and             = conjunction
--- (∧)             = conjunction
--- 
--- (∨), disjunction, or :: B -> B -> B
--- disjunction F F = F
--- disjunction T F = T
--- disjunction F T = T
--- disjunction T T = T
--- or              = disjunction
--- (∨)             = disjunction
--- 
--- (¬), negation, not :: B -> B
--- negation T = F
--- negation F = T
--- not        = negation
--- (¬)        = negation
--- 
+reduce :: Algebra -> Algebra
+reduce (NOT bool)       = (¬) bool
+reduce (AND left right) = (∧) left right
+reduce (OR  left right) = (∨) left right
+
+(∧), conjunction, and :: Algebra -> Algebra -> Algebra
+conjunction (Bool F) (Bool F) = (Bool F)
+conjunction (Bool T) (Bool F) = (Bool F)
+conjunction (Bool F) (Bool T) = (Bool F)
+conjunction (Bool T) (Bool T) = (Bool T)
+conjunction  left     right   = conjunction (reduce left) (reduce right)
+and             = conjunction
+(∧)             = conjunction
+
+(∨), disjunction, or :: Algebra -> Algebra -> Algebra
+disjunction (Bool F) (Bool F) = (Bool F)
+disjunction (Bool T) (Bool F) = (Bool T)
+disjunction (Bool F) (Bool T) = (Bool T)
+disjunction (Bool T) (Bool T) = (Bool T)
+disjunction  left     right   = disjunction (reduce left) (reduce right)
+or              = disjunction
+(∨)             = disjunction
+
+(¬), negation, not :: Algebra -> Algebra
+negation (Bool T) = (Bool F)
+negation (Bool F) = (Bool T)
+negation expr     = reduce expr
+not        = negation
+(¬)        = negation
+
