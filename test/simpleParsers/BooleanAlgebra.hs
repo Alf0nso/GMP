@@ -102,5 +102,7 @@ not             = negation
 (¬)             = negation
 
 -- (AND (NOT (OR f (NOT (v "y")))) (NOT (v "x"))) -> (¬(¬y)) ∧ (¬x)
-smallString :: Gen String
-smallString = choose (1,5) >>= \size -> vectorOf size (elements ['a' .. 'z'])
+test :: IO ()
+test = do a <- generate $ algebra 5
+          putStrLn $ "Original: " ++ show a
+          putStrLn $ "Reduced: "  ++ (show $ reduce a)
