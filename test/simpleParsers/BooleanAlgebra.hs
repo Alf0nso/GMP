@@ -36,29 +36,38 @@ reduce :: Algebra -> Algebra
 reduce (NOT bool)       = (¬) bool
 reduce (AND left right) = (∧) left right
 reduce (OR  left right) = (∨) left right
+reduce  expr            = expr
 
 (∧), conjunction, and :: Algebra -> Algebra -> Algebra
-conjunction (Bool F) (Bool F) = (Bool F)
-conjunction (Bool T) (Bool F) = (Bool F)
-conjunction (Bool F) (Bool T) = (Bool F)
-conjunction (Bool T) (Bool T) = (Bool T)
-conjunction  left     right   = conjunction (reduce left) (reduce right)
-and             = conjunction
-(∧)             = conjunction
+conjunction left right =
+  case (reduce left, reduce right) of
+    (Bool F, _)      -> Bool F
+    (_, Bool F)      -> Bool F
+    (Bool T, right') -> right'
+    (left', Bool T)  -> left'
+    (left', right')  -> AND left' right'
+and                  = conjunction
+(∧)                  = conjunction
 
 (∨), disjunction, or :: Algebra -> Algebra -> Algebra
-disjunction (Bool F) (Bool F) = (Bool F)
-disjunction (Bool T) (Bool F) = (Bool T)
-disjunction (Bool F) (Bool T) = (Bool T)
-disjunction (Bool T) (Bool T) = (Bool T)
-disjunction  left     right   = disjunction (reduce left) (reduce right)
-or              = disjunction
-(∨)             = disjunction
+disjunction left right =
+  case (reduce left, reduce right) of
+    (Bool T, _)      -> Bool T
+    (_, Bool T)      -> Bool T
+    (Bool F, right') -> right'
+    (left', Bool F)  -> left'
+    (left', right')  -> OR left' right'
+or                   = disjunction
+(∨)                  = disjunction
 
 (¬), negation, not :: Algebra -> Algebra
-negation (Bool T) = (Bool F)
-negation (Bool F) = (Bool T)
-negation expr     = reduce expr
-not        = negation
-(¬)        = negation
+negation expr =
+  case reduce expr of
+    Bool T      -> Bool F
+    Bool F      -> Bool T
+    (NOT expr') -> expr'
+    expr'       -> NOT expr'
+not             = negation
+(¬)             = negation
 
+-- (AND (NOT (OR f (NOT (v "y")))) (NOT (v "x"))) -> (¬(¬y)) ∧ (¬x)
