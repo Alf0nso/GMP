@@ -1,11 +1,15 @@
+import Test.QuickCheck
+
 data Algebra = AND     Algebra Algebra
              | OR      Algebra Algebra
              | NOT     Algebra
              | Bool    B
+             deriving Eq
 
 data B = T
        | F
        | Var String
+       deriving Eq
 
 t,f :: Algebra
 t = Bool T
