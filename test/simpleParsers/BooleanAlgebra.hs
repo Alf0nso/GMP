@@ -36,6 +36,9 @@ instance Show B where
   show F       = "⊥"
   show (Var s) = s
 
+instance Arbitrary B where
+  arbitrary = oneof [ pure T, pure F, Var <$> smallString ]
+
 reduce :: Algebra -> Algebra
 reduce (NOT bool)       = (¬) bool
 reduce (AND left right) = (∧) left right
@@ -75,3 +78,5 @@ not             = negation
 (¬)             = negation
 
 -- (AND (NOT (OR f (NOT (v "y")))) (NOT (v "x"))) -> (¬(¬y)) ∧ (¬x)
+smallString :: Gen String
+smallString = choose (1,5) >>= \size -> vectorOf size (elements ['a' .. 'z'])
