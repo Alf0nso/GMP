@@ -39,8 +39,32 @@ instance Show B where
 instance Arbitrary B where
   arbitrary = oneof [ pure T, pure F, Var <$> smallString ]
 
+smallString :: Gen String
+smallString = choose (1,5) >>= \size -> vectorOf size (elements ['a' .. 'z'])
+
+bool :: Gen Algebra
+bool = Bool <$> (arbitrary :: Gen B)
+
+not' :: Gen Algebra
+not' = NOT <$> (algebra 2)
+
+and' :: Gen Algebra
+and' = AND <$> (algebra 2) <*> (algebra 2)
+
+or' :: Gen Algebra
+or' = OR <$> (algebra 2) <*> (algebra 2)
+
+algebra' :: Gen Algebra
+algebra' = scale (`div` 2) $ oneof [ bool, not', and', or' ]
+
+algebra :: Int -> Gen Algebra
+algebra size
+  | size>0 = frequency [(3, algebra'),
+                        (1, bool)]
+  | otherwise = bool
+
 reduce :: Algebra -> Algebra
-reduce (NOT bool)       = (¬) bool
+reduce (NOT b)          = (¬) b
 reduce (AND left right) = (∧) left right
 reduce (OR  left right) = (∨) left right
 reduce  expr            = expr
