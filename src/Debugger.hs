@@ -1,8 +1,10 @@
 {-# LANGUAGE LambdaCase #-}
 module Debugger
-  ( debuggerParse
-  , solveParser
+  ( solveParser
+  , debuggerParse
   , debuggerParseWR
+  , solveParserReturn
+  , debuggerParseReturn
   , solveParserWithRight ) where
 
 import Parser ( Parser(..) )
@@ -11,6 +13,9 @@ import Errors ( Error(..)
 
 debuggerParse :: (Show t, Show p) => [t] -> Parser t p -> IO ()
 debuggerParse tokens parser = solveParser $ parse parser tokens
+
+debuggerParseReturn :: (Show t, Show p) => [t] -> Parser t p -> IO (Maybe p)
+debuggerParseReturn tokens parser = solveParserReturn $ parse parser tokens
 
 debuggerParseWR :: Show t => ((p, [t]) -> IO ()) -> [t] -> Parser t p -> IO ()
 debuggerParseWR fun tokens parser = solveParserWithRight fun $ parse parser tokens
@@ -26,3 +31,10 @@ solveParser = \case
   Left err             -> putStrLn $ printErrors err
   Right (parsed, left) -> putStrLn $ "Parsing output: " ++ show parsed
                          ++ "\n" ++ "Left: " ++ show left
+
+solveParserReturn :: (Show t, Show p) => Either [Error t] (p, [t]) -> IO (Maybe p)
+solveParserReturn = \case
+  Left err             -> (putStrLn $ printErrors err) >> return Nothing
+  Right (parsed, left) -> putStrLn ("Parsing output: " ++
+                                    show parsed ++ "\n" ++
+                                    "Left: " ++ show left) >> return (Just parsed)
