@@ -11,25 +11,44 @@ import Basics
   , letters
   , charSymbol
   , stringSymbols
-  , executeParserD
-  )
+  , executeParserDR )
 import Test.QuickCheck
 
 --------------------------------
 -- Parser for boolean algebra --
 --------------------------------
 true' :: Parser Token Algebra
-true' = do _ <- between spaces (stringSymbols "true") spaces
+true' = do _ <- between spaces (stringSymbols "true" <|> stringSymbols "⊤") spaces
            return (Bool T)
 
 false' :: Parser Token Algebra
-false' = do _ <- between spaces (stringSymbols "false") spaces
+false' = do _ <- between spaces (stringSymbols "false" <|> stringSymbols "⊥") spaces
             return (Bool F)
 
 var' :: Parser Token Algebra
 var' = do l <- between spaces letters spaces
           return $ v (destokenize l)
 
+bools' :: Parser Token Algebra
+bools' = true' <|> false' <|> var'
+
+lparen, rparen :: Parser Token Token
+lparen = charSymbol '(' <* spaces
+rparen = spaces *> charSymbol ')'
+
+and'', or'' :: Parser Token (Algebra -> Algebra -> Algebra)
+not''       :: Parser Token (Algebra -> Algebra)
+and'' = stringSymbols "and" <|> stringSymbols "∧" >> return AND
+not'' = stringSymbols "not" <|> stringSymbols "¬" >> return NOT
+or''  = stringSymbols "or"  <|> stringSymbols "∨" >> return OR
+
+op :: Parser Token (Algebra -> Algebra -> Algebra)
+op = and'' <|> or''
+
+term, alge, unar :: Parser Token Algebra
+term = unar `chainl1` op
+alge = between lparen term rparen <|> bools'
+unar = (not'' <*> unar) <|> alge
 
 data Algebra = AND     Algebra Algebra
              | OR      Algebra Algebra
@@ -77,13 +96,13 @@ bool :: Gen Algebra
 bool = Bool <$> (arbitrary :: Gen B)
 
 not' :: Gen Algebra
-not' = NOT <$> (algebra 2)
+not' = NOT <$> algebra 2
 
 and' :: Gen Algebra
-and' = AND <$> (algebra 2) <*> (algebra 2)
+and' = AND <$> algebra 2 <*> algebra 2
 
 or' :: Gen Algebra
-or' = OR <$> (algebra 2) <*> (algebra 2)
+or' = OR <$> algebra 2 <*> algebra 2
 
 algebra' :: Gen Algebra
 algebra' = scale (`div` 2) $ oneof [ bool, not', and', or' ]
@@ -132,7 +151,9 @@ negation expr =
 not             = negation
 (¬)             = negation
 
-test :: IO ()
-test = do a <- generate $ algebra 5
-          putStrLn $ "Original: " ++ show a
-          putStrLn $ "Reduced: "  ++ (show $ reduce a)
+test_parser :: IO ()
+test_parser = do alg <- generate $ algebra 5
+                 out <- executeParserDR term (show alg)
+                 case out of
+                   Just x  -> putStrLn ("Reduced: " ++ show (reduce x))
+                   Nothing -> putStrLn "Could not solve the parsing action."
