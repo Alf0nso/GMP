@@ -8,6 +8,7 @@ module Basics
   , charSymbol
   , stringSymbols
   , executeParserD
+  , executeParserDR
   , executeParserDWR
   ) where
 import Tokenizer
@@ -30,6 +31,7 @@ import Parser
 import Debugger
   ( debuggerParse
   , debuggerParseWR
+  , debuggerParseReturn
   )
 
 {- Basic token functions -}
@@ -53,6 +55,9 @@ stringSymbols str = string (tokenString str) <* spaces
 {- Executing parsers -}
 executeParserD :: Show p => Parser Token p -> String -> IO ()
 executeParserD parser str = debuggerParse (tokenizer str) parser
+
+executeParserDR :: Show p => Parser Token p -> String -> IO (Maybe p)
+executeParserDR parser str = debuggerParseReturn (tokenizer str) parser
 
 executeParserDWR :: ((p, [Token]) -> IO ()) -> Parser Token p -> String -> IO ()
 executeParserDWR fun parser str = debuggerParseWR fun (tokenizer str) parser
