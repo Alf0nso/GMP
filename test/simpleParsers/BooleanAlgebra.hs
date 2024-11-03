@@ -1,4 +1,35 @@
+import Tokenizer
+  ( Token(..)
+  , destokenize )
+import Parser
+  ( Parser(..)
+  , between
+  , (<|>)
+  , chainl1 )
+import Basics
+  ( spaces
+  , letters
+  , charSymbol
+  , stringSymbols
+  , executeParserD
+  )
 import Test.QuickCheck
+
+--------------------------------
+-- Parser for boolean algebra --
+--------------------------------
+true' :: Parser Token Algebra
+true' = do _ <- between spaces (stringSymbols "true") spaces
+           return (Bool T)
+
+false' :: Parser Token Algebra
+false' = do _ <- between spaces (stringSymbols "false") spaces
+            return (Bool F)
+
+var' :: Parser Token Algebra
+var' = do l <- between spaces letters spaces
+          return $ v (destokenize l)
+
 
 data Algebra = AND     Algebra Algebra
              | OR      Algebra Algebra
@@ -101,7 +132,6 @@ negation expr =
 not             = negation
 (¬)             = negation
 
--- (AND (NOT (OR f (NOT (v "y")))) (NOT (v "x"))) -> (¬(¬y)) ∧ (¬x)
 test :: IO ()
 test = do a <- generate $ algebra 5
           putStrLn $ "Original: " ++ show a
