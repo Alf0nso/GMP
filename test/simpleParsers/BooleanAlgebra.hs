@@ -18,11 +18,13 @@ import Test.QuickCheck
 -- Parser for boolean algebra --
 --------------------------------
 true' :: Parser Token Algebra
-true' = do _ <- between spaces (stringSymbols "true" <|> stringSymbols "⊤") spaces
+true' = do _ <- between spaces (stringSymbols "true" <|>
+                               stringSymbols "⊤") spaces
            return (Bool T)
 
 false' :: Parser Token Algebra
-false' = do _ <- between spaces (stringSymbols "false" <|> stringSymbols "⊥") spaces
+false' = do _ <- between spaces (stringSymbols "false" <|>
+                                stringSymbols "⊥") spaces
             return (Bool F)
 
 var' :: Parser Token Algebra
