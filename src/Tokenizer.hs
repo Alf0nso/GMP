@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-}
 module Tokenizer
   ( Token(..)
   , offToken
@@ -28,50 +29,52 @@ incrY = incrYy 1
 incrYy :: Integer -> Position -> Position
 incrYy i (x, y) = (x, y + i)
 
-offToken :: Char -> Token
+offToken :: Char -> Token Char
 offToken c = Token c (0, 0)
 ------------------------------
+-- class Tokenizable t where
+--   type 
+
+data Token a  = Token a Position
+  deriving (Eq)
 
 {- Token related -}
-data Token    = Token Char Position
+-- data Token    = Token Char Position
 
 {- Instances -}
-instance Show Token where
+instance Show (Token Char) where
   show (Token c p) = show c ++ " " ++ show p
 
-instance Eq Token where
-  Token c1 _ == Token c2 _ = c1 == c2
-  Token c1 _ /= Token c2 _ = c1 /= c2
-
-appToken :: (Char -> a) -> Token -> a
+appToken :: (a -> b) -> Token a -> b
 appToken f (Token c _) = f c
 
-isDigit :: Token -> Bool
+isDigit :: Token Char -> Bool
 isDigit = appToken Data.Char.isDigit
 
-isLetter :: Token -> Bool
+isLetter :: Token Char -> Bool
 isLetter = appToken Data.Char.isLetter
 
-isSpace :: Token -> Bool
+isSpace :: Token Char -> Bool
 isSpace = appToken Data.Char.isSpace
 
 ------------------------------
 
-tokenizer' :: Position -> String -> [Token]
+tokenizer' :: Position -> String -> [Token Char]
 tokenizer' _   []            = []
 tokenizer' pos ('\n':string) =
   Token '\n' pos:tokenizer' (incrY pos) string
 tokenizer' pos (c:string)    =
   Token c pos:tokenizer' (incrX pos) string
 
-tokenizer :: String -> [Token]
+tokenizer :: String -> [Token Char]
 tokenizer = tokenizer' (1,1)
 
-tokenString :: String -> [Token]
+tokenString :: String -> [Token Char]
 tokenString = map offToken
 
-destoken :: Token -> Char
+destoken :: Token Char -> Char
 destoken (Token c _) = c
 
-destokenize :: [Token] -> String
+destokenize :: [Token Char] -> String
 destokenize = map destoken
+
