@@ -12,6 +12,7 @@ import Test.QuickCheck
 
 import Tokenizer
   ( Token(..)
+  , TChar
   , destokenize )
 import Parser
   ( Parser(..)
@@ -131,8 +132,8 @@ fiveVals n
   | otherwise = value 1 4 n
 
 -- Parsing
-nullP :: Parser Token JSON
+nullP :: Parser TChar JSON
 nullP = stringSymbols "null" $> Null
 
-boolP :: Parser Token JSON
-boolP = stringSymbols ""
+boolP :: Parser TChar JSON
+boolP = (stringSymbols "true" $> JBol True) <|> (stringSymbols "false" $> JBol False)

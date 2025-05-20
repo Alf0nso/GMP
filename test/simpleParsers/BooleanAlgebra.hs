@@ -1,5 +1,14 @@
+module BooleanAlgebra
+  ( parser_on_random
+  , parser
+  , t, f
+  , BooleanAlgebra.and
+  , BooleanAlgebra.or
+  , BooleanAlgebra.not
+  ) where
+
 import Tokenizer
-  ( Token(..)
+  ( TChar
   , destokenize )
 import Parser
   ( Parser(..)
@@ -17,37 +26,42 @@ import Test.QuickCheck
 --------------------------------
 -- Parser for boolean algebra --
 --------------------------------
-true' :: Parser Token Algebra
+true' :: Parser TChar Algebra
 true' = do _ <- between spaces (stringSymbols "true" <|>
-                               stringSymbols "⊤") spaces
+                               stringSymbols "⊤"    <|>
+                               stringSymbols "\8868" ) spaces
            return (Bool T)
 
-false' :: Parser Token Algebra
+false' :: Parser TChar Algebra
 false' = do _ <- between spaces (stringSymbols "false" <|>
-                                stringSymbols "⊥") spaces
+                                stringSymbols "⊥"     <|>
+                                stringSymbols "\8869" ) spaces
             return (Bool F)
 
-var' :: Parser Token Algebra
+var' :: Parser TChar Algebra
 var' = do l <- between spaces letters spaces
           return $ v (destokenize l)
 
-bools' :: Parser Token Algebra
+bools' :: Parser TChar Algebra
 bools' = true' <|> false' <|> var'
 
-lparen, rparen :: Parser Token Token
+lparen, rparen :: Parser TChar TChar
 lparen = charSymbol '(' <* spaces
 rparen = spaces *> charSymbol ')'
 
-and'', or'' :: Parser Token (Algebra -> Algebra -> Algebra)
-not''       :: Parser Token (Algebra -> Algebra)
-and'' = stringSymbols "and" <|> stringSymbols "∧" >> return AND
-not'' = stringSymbols "not" <|> stringSymbols "¬" >> return NOT
-or''  = stringSymbols "or"  <|> stringSymbols "∨" >> return OR
+and'', or'' :: Parser TChar (Algebra -> Algebra -> Algebra)
+not''       :: Parser TChar (Algebra -> Algebra)
+and'' = stringSymbols "and" <|> stringSymbols "∧" <|> stringSymbols "\8743"
+        >> return AND
+not'' = stringSymbols "not" <|> stringSymbols "¬" <|> stringSymbols "\172"
+        >> return NOT
+or''  = stringSymbols "or"  <|> stringSymbols "∨" <|> stringSymbols "\8744"
+        >> return OR
 
-op :: Parser Token (Algebra -> Algebra -> Algebra)
+op :: Parser TChar (Algebra -> Algebra -> Algebra)
 op = and'' <|> or''
 
-term, alge, unar :: Parser Token Algebra
+term, alge, unar :: Parser TChar Algebra
 term = unar `chainl1` op
 alge = between lparen term rparen <|> bools'
 unar = (not'' <*> unar) <|> alge
@@ -153,9 +167,17 @@ negation expr =
 not             = negation
 (¬)             = negation
 
-test_parser :: IO ()
-test_parser = do alg <- generate $ algebra 5
-                 out <- executeParserDR term (show alg)
-                 case out of
-                   Just x  -> putStrLn ("Reduced: " ++ show (reduce x))
-                   Nothing -> putStrLn "Could not solve the parsing action."
+parser_on_random :: IO ()
+parser_on_random = do alg <- generate $ algebra 5
+                      putStrLn ("Parsing: " ++ show alg)
+                      out <- executeParserDR term (show alg)
+                      case out of
+                        Just x  -> putStrLn ("Reduced: " ++ show (reduce x))
+                        Nothing -> putStrLn "Could not solve the parsing action."
+
+parser :: String -> IO ()
+parser s = do putStrLn ("Parsing: " ++ show s)
+              out <- executeParserDR term (show s)
+              case out of
+                Just x  -> putStrLn ("Reduced: " ++ show (reduce x))
+                Nothing -> putStrLn "Could not solve the parsing action."

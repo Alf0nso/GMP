@@ -1,5 +1,5 @@
 import Tokenizer
-  ( Token(..)
+  ( TChar
   , destokenize
   )
 import Parser
@@ -18,21 +18,21 @@ data List = Atom String
           | Cons [List]
           deriving (Show)
 
-lbracket, rbracket :: Parser Token Token
+lbracket, rbracket :: Parser TChar TChar
 lbracket = charSymbol '[' <* spaces
 rbracket = spaces *> charSymbol ']'
 
-comma :: Parser Token Token
+comma :: Parser TChar TChar
 comma    = charSymbol ',' <* spaces
 
-letters' :: Parser Token List
+letters' :: Parser TChar List
 letters' = do l <- between spaces letters spaces
               return $ Atom (destokenize l)
 
-list :: Parser Token List
+list :: Parser TChar List
 list = Cons <$> sepBy expr comma
 
-expr :: Parser Token List
+expr :: Parser TChar List
 expr = letters' <|> do _ <- lbracket
                        x <- list
                        _ <- rbracket

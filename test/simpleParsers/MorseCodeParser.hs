@@ -1,5 +1,5 @@
 import Tokenizer
-  ( Token(..) )
+  ( TChar )
 import Parser
   ( Parser(..)
   , (<|>)
@@ -81,8 +81,8 @@ morseSymbols' []         = End
 morseSymbols' (_:rest)   = Space (morseSymbols' rest)
 
 {- Parsing section -}
-h, v, s, f, u, i, l, j, p, w, r, a, e :: Parser Token Char
-o, z, q, g, m, b, x, d, y, c, k, n, t :: Parser Token Char
+h, v, s, f, u, i, l, j, p, w, r, a, e :: Parser TChar Char
+o, z, q, g, m, b, x, d, y, c, k, n, t :: Parser TChar Char
 h = stringSymbols "...." >> return 'h'
 v = stringSymbols "...-" >> return 'v'
 s = stringSymbols "..."  >> return 's'
@@ -110,7 +110,7 @@ k = stringSymbols "-.-"  >> return 'k'
 n = stringSymbols "-."   >> return 'n'
 t = stringSymbols "-"    >> return 't'
 
-morseCode :: Parser Token Char
+morseCode :: Parser TChar Char
 morseCode = h <|> v <|>
             s <|> f <|>
             u <|> i <|>
@@ -125,7 +125,7 @@ morseCode = h <|> v <|>
             c <|> k <|>
             n <|> t
 
-mc :: Parser Token Morse
+mc :: Parser TChar Morse
 mc = do morse_code <- many morseCode
         return $ morseSymbols' morse_code
 
