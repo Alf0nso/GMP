@@ -20,9 +20,13 @@ library
                      , Tokenizer
                      , Errors
                      , Debugger
+                     , Strings
+                     , Basics
   build-depends:       QuickCheck >= 2.14.3,
                        base >= 4.7 && < 5,
-                       containers >= 0.6.7
+                       containers >= 0.6.7,
+                       text,
+                       bytestring
   default-language:    Haskell2010
   ghc-options:         -Wall
                        -Wcompat
