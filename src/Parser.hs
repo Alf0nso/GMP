@@ -17,7 +17,7 @@ module Parser
   , chainl, chainl1
   , sepBy, sepBy1
   , sepEndBy, sepEndBy1
-  , between
+  , between, between1
   , (<|>), ($>)
   , some
   ) where
@@ -122,6 +122,9 @@ choice expected =
 
 between :: Applicative f => f a -> f b -> f c -> f b
 between p1 p2 p3 = p1 *> p2 <* p3
+
+between1 :: Applicative f => f a -> f b -> f b
+between1 p1 p2 = p1 *> p2 <* p1
 -------------------------------------------------------------------
 
 {- Repetition -}
